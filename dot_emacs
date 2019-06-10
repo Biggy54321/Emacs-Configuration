@@ -1,0 +1,176 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl
+    (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
+(package-initialize)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(c-mode-hook (quote (my-c-setup)))
+ '(c-offsets-alist (quote ((statement-cont . ++) (arglist-intro . ++))))
+ '(display-line-numbers t)
+ '(fci-rule-column nil)
+ '(inhibit-startup-screen t)
+ '(menu-bar-mode nil)
+ '(package-selected-packages
+   (quote
+    (fill-column-indicator column-enforce-mode doom-themes doom-modeline)))
+ '(scroll-bar-mode nil)
+ '(tool-bar-mode nil)
+ '(whitespace-line-column 80))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Hack" :foundry "simp" :slant normal :weight normal :height 151 :width normal)))))
+
+;; Set k&r style formatting
+(setq c-default-style "k&r"
+      c-basic-offset 4)
+;; Expand tabs to spaces
+(setq-default indent-tabs-mode nil)
+;; Show trailing white spaces
+(setq-default show-trailing-whitespace t)
+;; Display column number
+(column-number-mode 1)
+;; Highlight matchin paranthesis
+(show-paren-mode 1)
+;; stop creating backup~ files
+(setq make-backup-files nil)
+;; stop creating #autosave# files
+(setq auto-save-default nil)
+
+;; Doom theme
+(require 'doom-themes)
+
+;; Global settings (defaults)
+(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+;; may have their own settings.
+(load-theme 'doom-one t)
+
+;; Enable flashing mode-line on errors
+(doom-themes-visual-bell-config)
+
+;; Enable custom neotree theme (all-the-icons must be installed!)
+(doom-themes-neotree-config)
+;; or for treemacs users
+(doom-themes-treemacs-config)
+
+;; Corrects (and improves) org-mode's native fontification.
+(doom-themes-org-config)
+
+;; Doom modeline
+(require 'doom-modeline)
+(doom-modeline-mode 1)
+(setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
+
+;; Whether display icons in mode-line or not.
+(setq doom-modeline-icon t)
+
+;; Whether display the icon for major mode. It respects `doom-modeline-icon'.
+(setq doom-modeline-major-mode-icon t)
+
+;; Whether display color icons for `major-mode'. It respects
+;; `doom-modeline-icon' and `all-the-icons-color-icons'.
+(setq doom-modeline-major-mode-color-icon t)
+
+;; Whether display icons for buffer states. It respects `doom-modeline-icon'.
+(setq doom-modeline-buffer-state-icon t)
+
+;; Whether display buffer modification icon. It respects `doom-modeline-icon'
+;; and `doom-modeline-buffer-state-icon'.
+(setq doom-modeline-buffer-modification-icon t)
+
+;; Whether display minor modes in mode-line or not.
+(setq doom-modeline-minor-modes nil)
+
+;; If non-nil, a word count will be added to the selection-info modeline segment.
+(setq doom-modeline-enable-word-count nil)
+
+;; Whether display buffer encoding.
+(setq doom-modeline-buffer-encoding t)
+
+;; Whether display indentation information.
+(setq doom-modeline-indent-info nil)
+
+;; If non-nil, only display one number for checker information if applicable.
+(setq doom-modeline-checker-simple-format t)
+
+;; The maximum displayed length of the branch name of version control.
+(setq doom-modeline-vcs-max-length 12)
+
+;; Whether display perspective name or not. Non-nil to display in mode-line.
+(setq doom-modeline-persp-name t)
+
+;; Whether display `lsp' state or not. Non-nil to display in mode-line.
+(setq doom-modeline-lsp t)
+
+;; Whether display github notifications or not. Requires `ghub` package.
+(setq doom-modeline-github nil)
+
+;; The interval of checking github.
+(setq doom-modeline-github-interval (* 30 60))
+
+;; Whether display environment version or not
+(setq doom-modeline-env-version t)
+;; Or for individual languages
+(setq doom-modeline-env-enable-python t)
+(setq doom-modeline-env-enable-ruby t)
+(setq doom-modeline-env-enable-perl t)
+(setq doom-modeline-env-enable-go t)
+(setq doom-modeline-env-enable-elixir t)
+(setq doom-modeline-env-enable-rust t)
+
+;; Change the executables to use for the language version string
+(setq doom-modeline-env-python-executable "python")
+(setq doom-modeline-env-ruby-executable "ruby")
+(setq doom-modeline-env-perl-executable "perl")
+(setq doom-modeline-env-go-executable "go")
+(setq doom-modeline-env-elixir-executable "iex")
+(setq doom-modeline-env-rust-executable "rustc")
+
+;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
+(setq doom-modeline-mu4e t)
+
+;; Function to stylize the irc buffer names.
+(setq doom-modeline-irc-stylize 'identity)
+
+;; Whether display irc notifications or not. Requires `circe' package.
+(setq doom-modeline-irc t)
+(setq inhibit-compacting-font-caches t)
+
+(setq find-file-visit-truename t)
+
+;; Display the 80th column rule
+(require 'fill-column-indicator)
+(setq fci-rule-column 80)
+(setq fci-rule-width 2)
+(define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+(global-fci-mode 1)
+;; (global-column-enforce-mode t)
+;; (setq column-enforce-column 80)
